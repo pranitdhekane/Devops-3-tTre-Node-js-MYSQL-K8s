@@ -1,0 +1,13 @@
+kind: ConfigMap
+apiVersion: v1
+
+metadata:
+  name: user-mgmt-env
+  namespace: user-mgmt
+
+data:
+  API_URL: "http://backend-service.user-mgmt-svc.cluster.local:5001/api/users"
+  host: 'user-mgmt-db-service.user-mgmt.svc.cluster.local'
+  user: 'root'
+  database: 'test_db'
+

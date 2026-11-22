@@ -1,0 +1,56 @@
+kind: Deployment
+apiVersion: apps/v1
+
+metadata:
+  name: user-mgmt-app-dep
+  namespace: user-mgmt
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-mgmt-app
+  template:
+    metadata:
+      labels:
+        app: user-mgmt-app
+
+    spec:
+      containers:
+        - name: web-ui
+          image: dpranit/user-mgmt:latest
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: user-mgmt-env
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+
+
+        - name: backend
+          image: dpranit/server:v2
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: user-mgmt-env
+          env:
+            - name: password
+              valueFrom:
+                secretKeyRef:
+                  name: user-mgmt-cred
+                  key: MYSQL_ROOT_PASSWORD
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+
+            limits:
+              cpu: 200m
+              memory: 256Mi

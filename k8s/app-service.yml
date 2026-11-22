@@ -1,0 +1,19 @@
+kind: Service
+apiVersion: v1
+
+
+metadata:
+  name: user-mgmt-app-service
+  namespace: user-mgmt
+
+
+spec:
+
+  selector:
+    app: user-mgmt-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+

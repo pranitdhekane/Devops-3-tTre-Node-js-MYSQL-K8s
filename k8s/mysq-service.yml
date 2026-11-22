@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+
+
+metadata:
+  name: user-mgmt-db-service
+  namespace: user-mgmt
+
+spec:
+  selector:
+    app: user-mgmt-db
+  clusterIP: None
+  ports:
+  - name: mysql-port
+    protocol: TCP
+    port: 3306

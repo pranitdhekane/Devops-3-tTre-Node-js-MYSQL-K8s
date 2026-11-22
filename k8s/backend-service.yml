@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+
+metadata:
+  name: backend-service
+  namespace: user-mgmt
+
+spec:
+  selector:
+    app: user-mgmt-app
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000
+  

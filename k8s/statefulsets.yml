@@ -1,0 +1,58 @@
+kind: StatefulSet
+apiVersion: apps/v1
+
+metadata:
+  name: user-mgmt-data
+  namespace: user-mgmt
+
+spec:
+  replicas: 1
+  serviceName: user-mgmt-db-service
+  selector:
+    matchLabels:
+      app: user-mgmt-db
+  template:
+    metadata:
+      labels:
+        app: user-mgmt-db
+
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+          args:
+            - --default-authentication-plugin=mysql_native_password
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: user-mgmt-cred
+                  key: MYSQL_ROOT_PASSWORD
+
+
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: user-mgmt-env
+                  key: database
+          volumeMounts:
+            - name: user-mgmt-data
+              mountPath: /var/lib/mysql
+            - name: mysql-init
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: mysql-init
+          configMap:
+            name: mysql-init
+
+  volumeClaimTemplates:
+    - metadata:
+        name: user-mgmt-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
